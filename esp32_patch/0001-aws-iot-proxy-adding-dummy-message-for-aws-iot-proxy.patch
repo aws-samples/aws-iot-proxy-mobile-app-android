@@ -1,0 +1,45 @@
+From 4ff1fa1eef1b446459c7db41e1eaa6c6db64b61f Mon Sep 17 00:00:00 2001
+From: "Alex.Li" <zhiqinli@amazon.com>
+Date: Fri, 3 Jul 2020 09:03:18 +0800
+Subject: [PATCH] aws-iot-proxy: adding dummy message for aws iot proxy
+
+---
+ main/gatts_demo.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/main/gatts_demo.c b/main/gatts_demo.c
+index ea140e8..ecaa86b 100644
+--- a/main/gatts_demo.c
++++ b/main/gatts_demo.c
+@@ -92,6 +92,8 @@ static uint8_t adv_service_uuid128[32] = {
+     0xfb, 0x34, 0x9b, 0x5f, 0x80, 0x00, 0x00, 0x80, 0x00, 0x10, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00,
+ };
+ 
++static float dummy_temp = 25.56;
++
+ // The length of adv data must be less than 31 bytes
+ //static uint8_t test_manufacturer[TEST_MANUFACTURER_DATA_LEN] =  {0x12, 0x23, 0x45, 0x56};
+ //adv data
+@@ -513,12 +515,14 @@ static void gatts_profile_b_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
+         ESP_LOGI(GATTS_TAG, "GATT_READ_EVT, conn_id %d, trans_id %d, handle %d\n", param->read.conn_id, param->read.trans_id, param->read.handle);
+         esp_gatt_rsp_t rsp;
+         memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
++        char head[2] = {0x04, 0x28};
++        char msg[40] = {0};
++        dummy_temp += 0.01;
++        snprintf(msg, sizeof(msg), "[esp]0{name:esp32;temp:%2.2f;bat:98%%}", dummy_temp);
+         rsp.attr_value.handle = param->read.handle;
+-        rsp.attr_value.len = 4;
+-        rsp.attr_value.value[0] = 0xde;
+-        rsp.attr_value.value[1] = 0xed;
+-        rsp.attr_value.value[2] = 0xbe;
+-        rsp.attr_value.value[3] = 0xef;
++        rsp.attr_value.len = sizeof(head) + sizeof(msg) - 1;
++        memcpy(rsp.attr_value.value, head, sizeof(head));
++        memcpy(rsp.attr_value.value + sizeof(head), msg, sizeof(msg) - 1);
+         esp_ble_gatts_send_response(gatts_if, param->read.conn_id, param->read.trans_id,
+                                     ESP_GATT_OK, &rsp);
+         break;
+-- 
+2.17.1
+
