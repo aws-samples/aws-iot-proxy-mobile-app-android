@@ -1,4 +1,11 @@
-# AWS IoT Proxy Mobile App for BLE Devices
+<h1 align="center">
+  AWS IoT Proxy Mobile App for BLE Devices
+  <br>
+</h1>
+
+<p align="center">
+  <a href="https://travis-ci.com/aws-samples/aws-iot-proxy-mobile-app-android"> <img src="https://travis-ci.com/aws-samples/aws-iot-proxy-mobile-app-android.svg?branch=master" alt="Build Status"> </a>
+</p>
 
 In order for Bluetooth Low Energy (BLE) devices to connect to AWS IoT, AWS has provided the [FreeRTOS BLE Library](https://docs.aws.amazon.com/freertos/latest/userguide/freertos-ble-library.html) for BLE devices to use MQTT, and [Mobile SDKs for Android and iOS](https://docs.aws.amazon.com/freertos/latest/userguide/freertos-ble-mobile.html) for mobile devices to act as connecting agents to AWS IoT.  
 
